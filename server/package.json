@@ -1,0 +1,20 @@
+{
+  "name": "marktplatz-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon --watch src index.js"
+  },
+  "author": "Bartek Stolarek",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "express-graphql": "^0.6.12",
+    "graphql": "^0.13.2",
+    "lodash": "^4.17.10",
+    "nodemon": "^1.17.5"
+  }
+}
