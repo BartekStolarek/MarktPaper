@@ -1,7 +1,7 @@
 const graphql = require('graphql');
 const _ = require('lodash');
 
-const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLList, GraphQLBoolean } = graphql;
+const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLList, GraphQLBoolean, GraphQLNonNull } = graphql;
 
 //dummy data
 var adverts = [
@@ -21,7 +21,7 @@ const AdvertisementType = new GraphQLObjectType({
     name: 'Advertisement',
     fields: () => ({
         id: { type: GraphQLID },
-        title: { type: GraphQLString },
+        title: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
         price: { type: GraphQLString },
         negotiable: { type: GraphQLBoolean },
@@ -40,7 +40,7 @@ const AuthorType = new GraphQLObjectType({
     name: 'Author',
     fields: () => ({
         id: { type: GraphQLID },
-        name: { type: GraphQLString },
+        name: { type: new GraphQLNonNull(GraphQLString) },
         email: { type: GraphQLString },
         phone: { type: GraphQLString },
         city: { type: GraphQLString },
@@ -52,6 +52,30 @@ const AuthorType = new GraphQLObjectType({
         }
     })
 });
+
+const Mutation = new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+        addAuthor: {
+            type: AuthorType,
+            args: {
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                email: { type: GraphQLString },
+                phone: { type: GraphQLString },
+                city: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+                let author = new AuthorType({
+                    name: args.name,
+                    email: args.email,
+                    phone: args.phone,
+                    city: args.city
+                });
+                return authors.save();
+            }
+        }
+    }
+})
 
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
@@ -86,5 +110,6 @@ const RootQuery = new GraphQLObjectType({
 });
 
 module.exports = new GraphQLSchema({
-    query: RootQuery
+    query: RootQuery,
+    mutation: Mutation
 })
