@@ -1,21 +1,9 @@
 const graphql = require('graphql');
 const _ = require('lodash');
+const Author = require('../models/author');
+const Advertisement = require('../models/advertisement');
 
 const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLList, GraphQLBoolean, GraphQLNonNull } = graphql;
-
-//dummy data
-var adverts = [
-    { title: 'Gaming Mouse', description: 'New gaming mouse!', price: "20 USD", authorID: '1', id: '1'},
-    { title: 'Gaming Mouse', description: 'New gaming mouse!', price: "20 USD", authorID: '2', id: '2'},
-    { title: 'Gaming Mouse', description: 'New gaming mouse!', price: "20 USD", authorID: '3', id: '3'},
-    { title: 'Keyboard', description: 'New gaming keyboard!', price: "50 USD", authorID: '1', id: '4'},
-];
-
-var authors = [
-    { name: 'Joe', email: 'joe@example.com', phone: '123456789', city: 'New York', id: '1'},
-    { name: 'Joe', email: 'joe@example.com', phone: '123456789', city: 'New York', id: '2'},
-    { name: 'Joe', email: 'joe@example.com', phone: '123456789', city: 'New York', id: '3'}
-];
 
 const AdvertisementType = new GraphQLObjectType({
     name: 'Advertisement',
@@ -30,7 +18,7 @@ const AdvertisementType = new GraphQLObjectType({
         author: {
             type: AuthorType,
             resolve(parent, args) {
-                return _.find(authors, { id: parent.authorID })
+                return AuthorType.findById(parent.authorId);
             }
         }
     })
@@ -47,7 +35,7 @@ const AuthorType = new GraphQLObjectType({
         advertisements: {
             type: new GraphQLList(AdvertisementType),
             resolve(parent, args) {
-                return _.filter(adverts, { authorID: parent.id })
+                return Advertisement.find({ authorId: parent.id })
             }
         }
     })
@@ -65,13 +53,33 @@ const Mutation = new GraphQLObjectType({
                 city: { type: GraphQLString }
             },
             resolve(parent, args) {
-                let author = new AuthorType({
+                let author = new Author({
                     name: args.name,
                     email: args.email,
                     phone: args.phone,
                     city: args.city
                 });
-                return authors.save();
+                return author.save();
+            }
+        },
+        addAdvertisement: {
+            type: AdvertisementType,
+            args: {
+                title: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: GraphQLString },
+                price: { type: GraphQLString },
+                photo: { type: GraphQLString },
+                negotiable: { type: GraphQLBoolean }
+            },
+            resolve(parent, args) {
+                let advertisement = new Advertisement({
+                    title: args.title,
+                    description: args.description,
+                    price: args.price,
+                    photo: args.photo,
+                    negotiable: args.negotiable
+                });
+                return advertisement.save();
             }
         }
     }
@@ -87,13 +95,13 @@ const RootQuery = new GraphQLObjectType({
                 //code to get data from db / other source
 
                 //this is example of getting from dummy data
-                return _.find(adverts, { id: args.id });
+                return Advertisement.findById(args.id);
             }
         },
         advertisements: {
             type: new GraphQLList(AdvertisementType),
             resolve(parent, args) {
-                return adverts;
+                return DH_UNABLE_TO_CHECK_GENERATOR.find({});
             }
         },
         author: {
@@ -103,7 +111,7 @@ const RootQuery = new GraphQLObjectType({
                 //code to get data from db / other source
     
                 //this is example of getting from dummy data
-                return _.find(authors, { id: args.id });
+                return Author.findById(args.id);
             }
         }
     }
