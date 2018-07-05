@@ -14,11 +14,13 @@ const getAuthorsQuery = gql`
 
 const getAdvertsQuery = gql`
     {
-        advertisement {
+        advertisements {
             id
             title
             description
             price
+            photo
+            negotiable
         }
     }
 `;

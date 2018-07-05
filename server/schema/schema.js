@@ -101,7 +101,7 @@ const RootQuery = new GraphQLObjectType({
         advertisements: {
             type: new GraphQLList(AdvertisementType),
             resolve(parent, args) {
-                return DH_UNABLE_TO_CHECK_GENERATOR.find({});
+                return Advertisement.find({});
             }
         },
         author: {
