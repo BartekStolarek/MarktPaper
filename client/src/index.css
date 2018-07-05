@@ -1,4 +1,16 @@
 body{
-    background: #eee;
-    font-family: 'Nunito SemiBold';
+    background: #fff;
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+}
+
+#adverts-list {
+    margin: 15px;
+}
+
+.ad-container {
+    background-color: #eee;
+    padding: 15px;
+    padding-top: 5px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }

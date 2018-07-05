@@ -25,4 +25,18 @@ const getAdvertsQuery = gql`
     }
 `;
 
-export { getAdvertsQuery, getAuthorsQuery };
+const addAdvertMutation = gql`
+    mutation AddAdvertisement($title: String!, $description: String!, 
+        $price: String!, $photo: String!, $negotiable: Boolean!) {
+            addAdvertisement(title: $title, description: $description, 
+                price: $price, photo: $photo, negotiable: $negotiable) {
+                    title
+                    description
+                    price
+                    photo
+                    negotiable
+                }
+        }
+`;
+
+export { getAdvertsQuery, getAuthorsQuery, addAdvertMutation };

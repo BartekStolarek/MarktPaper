@@ -8,21 +8,33 @@ class AdvertsList extends Component {
         this.state = {
             selected: null
         }
-
-        this.displayAdverts();
     }
 
     displayAdverts() {
         var data = this.props.data;
-        console.log(data);
+        
+        if (data.loading) {
+            return (<div>Loading Adverts, please wait...</div>);
+        } else {
+            return data.advertisements.map(ad => {
+                return(
+                    <div key={ad.id} className="ad-container">
+                        <h2>{ad.title}</h2>
+                        <h5>{ad.price}</h5>
+                        <div>{ad.description}</div>
+                    </div>
+                );
+            })
+        }
     }
 
     render() {
         return(
             <div>
-                <ul id="adverts-list">
-                    Adverts
-                </ul>
+                <div id="adverts-list">
+                    <h1>Recent Advertisements</h1>
+                    { this.displayAdverts() }
+                </div>
             </div>
         );
     }
