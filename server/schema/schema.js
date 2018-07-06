@@ -2,6 +2,7 @@ const graphql = require('graphql');
 const _ = require('lodash');
 const Author = require('../models/author');
 const Advertisement = require('../models/advertisement');
+const City = require('../models/city');
 
 const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLList, GraphQLBoolean, GraphQLNonNull } = graphql;
 
@@ -15,6 +16,12 @@ const AdvertisementType = new GraphQLObjectType({
         negotiable: { type: GraphQLBoolean },
         photo: { type: GraphQLString },
         dateAdded: { type: GraphQLString },
+        city: {
+            type: CityType,
+            resolve(parent, args) {
+                return CityType.findById(parent.cityId)
+            }
+        },
         author: {
             type: AuthorType,
             resolve(parent, args) {
@@ -36,6 +43,21 @@ const AuthorType = new GraphQLObjectType({
             type: new GraphQLList(AdvertisementType),
             resolve(parent, args) {
                 return Advertisement.find({ authorId: parent.id })
+            }
+        }
+    })
+});
+
+const CityType = new GraphQLObjectType({
+    name: 'City',
+    fields: () => ({
+        id: { type: GraphQLID },
+        name: { type: new GraphQLNonNull(GraphQLString) },
+        voivodenship: { type: GraphQLString },
+        advertisements: {
+            type: new GraphQLList(AdvertisementType),
+            resolve(parent, args) {
+                return Advertisement.find({ cityId: parent.id })
             }
         }
     })
@@ -81,6 +103,20 @@ const Mutation = new GraphQLObjectType({
                 });
                 return advertisement.save();
             }
+        },
+        addCity: {
+            type: CityType,
+            args: {
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                voivodenship: { type: GraphQLString }
+            },
+            resolve(parent, args) {
+                let city = new City({
+                    name: args.name,
+                    voivodenship: args.voivodenship
+                });
+                return city.save();
+            }
         }
     }
 })
@@ -113,7 +149,13 @@ const RootQuery = new GraphQLObjectType({
                 //this is example of getting from dummy data
                 return Author.findById(args.id);
             }
-        }
+        },
+        cities: {
+            type: new GraphQLList(CityType),
+            resolve(parent, args) {
+                return City.find({});
+            }
+        },
     }
 });
 

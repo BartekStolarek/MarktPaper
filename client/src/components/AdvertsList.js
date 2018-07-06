@@ -32,7 +32,7 @@ class AdvertsList extends Component {
         return(
             <div>
                 <div id="adverts-list">
-                    <h1>Recent Advertisements</h1>
+                    <h2>Recent Advertisements</h2>
                     { this.displayAdverts() }
                 </div>
             </div>

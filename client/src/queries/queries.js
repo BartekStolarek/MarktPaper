@@ -25,6 +25,16 @@ const getAdvertsQuery = gql`
     }
 `;
 
+const getCitiesQuery = gql`
+    {
+        cities {
+            id
+            name
+            voivodenship
+        }
+    }
+`;
+
 const addAdvertMutation = gql`
     mutation AddAdvertisement($title: String!, $description: String!, 
         $price: String!, $photo: String!, $negotiable: Boolean!) {
