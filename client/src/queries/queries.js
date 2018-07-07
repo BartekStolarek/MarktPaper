@@ -3,11 +3,10 @@ import { gql } from 'apollo-boost';
 const getAuthorsQuery = gql`
     {
         authors {
-            name
             id
-            email
-            phone
-            city
+            name
+            gender
+            country
         }
     }
 `;
@@ -18,6 +17,7 @@ const getAdvertsQuery = gql`
             id
             title
             description
+            category
             price
             photo
             negotiable
@@ -25,26 +25,18 @@ const getAdvertsQuery = gql`
     }
 `;
 
-const getCitiesQuery = gql`
-    {
-        cities {
-            id
-            name
-            voivodenship
-        }
-    }
-`;
-
 const addAdvertMutation = gql`
     mutation AddAdvertisement($title: String!, $description: String!, 
-        $price: String!, $photo: String!, $negotiable: Boolean!) {
+        $price: String!, $category: String!, $city: String!, $negotiable: Boolean!) {
             addAdvertisement(title: $title, description: $description, 
-                price: $price, photo: $photo, negotiable: $negotiable) {
+                price: $price, category: $category, city: $city, negotiable: $negotiable) {
                     title
                     description
+                    category
                     price
-                    photo
                     negotiable
+                    city
+                    authorId
                 }
         }
 `;

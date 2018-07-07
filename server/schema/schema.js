@@ -2,7 +2,6 @@ const graphql = require('graphql');
 const _ = require('lodash');
 const Author = require('../models/author');
 const Advertisement = require('../models/advertisement');
-const City = require('../models/city');
 
 const { GraphQLObjectType, GraphQLString, GraphQLSchema, GraphQLID, GraphQLList, GraphQLBoolean, GraphQLNonNull } = graphql;
 
@@ -12,20 +11,16 @@ const AdvertisementType = new GraphQLObjectType({
         id: { type: GraphQLID },
         title: { type: new GraphQLNonNull(GraphQLString) },
         description: { type: GraphQLString },
+        category: { type: GraphQLString },
         price: { type: GraphQLString },
         negotiable: { type: GraphQLBoolean },
         photo: { type: GraphQLString },
         dateAdded: { type: GraphQLString },
-        city: {
-            type: CityType,
-            resolve(parent, args) {
-                return CityType.findById(parent.cityId)
-            }
-        },
+        city: { type: GraphQLString },
         author: {
             type: AuthorType,
             resolve(parent, args) {
-                return AuthorType.findById(parent.authorId);
+                return Author.findById(parent.authorId);
             }
         }
     })
@@ -36,28 +31,12 @@ const AuthorType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLID },
         name: { type: new GraphQLNonNull(GraphQLString) },
-        email: { type: GraphQLString },
-        phone: { type: GraphQLString },
-        city: { type: GraphQLString },
-        advertisements: {
+        country: { type: GraphQLString },
+        gender: { type: GraphQLString },
+        advertisement: {
             type: new GraphQLList(AdvertisementType),
             resolve(parent, args) {
-                return Advertisement.find({ authorId: parent.id })
-            }
-        }
-    })
-});
-
-const CityType = new GraphQLObjectType({
-    name: 'City',
-    fields: () => ({
-        id: { type: GraphQLID },
-        name: { type: new GraphQLNonNull(GraphQLString) },
-        voivodenship: { type: GraphQLString },
-        advertisements: {
-            type: new GraphQLList(AdvertisementType),
-            resolve(parent, args) {
-                return Advertisement.find({ cityId: parent.id })
+                return Advertisement.find({ authorId: parent.id });
             }
         }
     })
@@ -70,16 +49,14 @@ const Mutation = new GraphQLObjectType({
             type: AuthorType,
             args: {
                 name: { type: new GraphQLNonNull(GraphQLString) },
-                email: { type: GraphQLString },
-                phone: { type: GraphQLString },
-                city: { type: GraphQLString }
+                country: { type: GraphQLString },
+                gender: { type: GraphQLString }
             },
             resolve(parent, args) {
                 let author = new Author({
                     name: args.name,
-                    email: args.email,
-                    phone: args.phone,
-                    city: args.city
+                    country: args.country,
+                    gender: args.gender
                 });
                 return author.save();
             }
@@ -89,33 +66,23 @@ const Mutation = new GraphQLObjectType({
             args: {
                 title: { type: new GraphQLNonNull(GraphQLString) },
                 description: { type: GraphQLString },
+                category: { type: GraphQLString },
                 price: { type: GraphQLString },
-                photo: { type: GraphQLString },
-                negotiable: { type: GraphQLBoolean }
+                city: { type: GraphQLString },
+                negotiable: { type: GraphQLBoolean },
+                authorId: { type: GraphQLString }
             },
             resolve(parent, args) {
                 let advertisement = new Advertisement({
                     title: args.title,
                     description: args.description,
+                    category: args.category,
                     price: args.price,
                     photo: args.photo,
-                    negotiable: args.negotiable
+                    negotiable: args.negotiable,
+                    authorId: args.authorId
                 });
                 return advertisement.save();
-            }
-        },
-        addCity: {
-            type: CityType,
-            args: {
-                name: { type: new GraphQLNonNull(GraphQLString) },
-                voivodenship: { type: GraphQLString }
-            },
-            resolve(parent, args) {
-                let city = new City({
-                    name: args.name,
-                    voivodenship: args.voivodenship
-                });
-                return city.save();
             }
         }
     }
@@ -150,12 +117,12 @@ const RootQuery = new GraphQLObjectType({
                 return Author.findById(args.id);
             }
         },
-        cities: {
-            type: new GraphQLList(CityType),
+        authors: {
+            type: AuthorType,
             resolve(parent, args) {
-                return City.find({});
+                return Author.find({});
             }
-        },
+        }
     }
 });
 

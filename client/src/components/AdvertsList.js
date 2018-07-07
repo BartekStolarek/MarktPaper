@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import { getAdvertsQuery } from '../queries/queries';
+import AddAdvert from './AddAdvert';
 
 class AdvertsList extends Component {
     constructor(props) {
@@ -34,6 +35,7 @@ class AdvertsList extends Component {
                 <div id="adverts-list">
                     <h2>Recent Advertisements</h2>
                     { this.displayAdverts() }
+                    <AddAdvert />
                 </div>
             </div>
         );
