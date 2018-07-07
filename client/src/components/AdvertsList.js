@@ -21,7 +21,7 @@ class AdvertsList extends Component {
                 return(
                     <div key={ad.id} className="ad-container">
                         <h2>{ad.title}</h2>
-                        <h5>{ad.price}</h5>
+                        <div>{ad.price}</div>
                         <div>{ad.description}</div>
                     </div>
                 );

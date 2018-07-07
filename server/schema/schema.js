@@ -14,7 +14,8 @@ const AdvertisementType = new GraphQLObjectType({
         category: { type: GraphQLString },
         price: { type: GraphQLString },
         negotiable: { type: GraphQLBoolean },
-        photo: { type: GraphQLString },
+        phone: { type: GraphQLString },
+        email: { type: GraphQLString },
         dateAdded: { type: GraphQLString },
         city: { type: GraphQLString },
         author: {
@@ -30,7 +31,7 @@ const AuthorType = new GraphQLObjectType({
     name: 'Author',
     fields: () => ({
         id: { type: GraphQLID },
-        name: { type: new GraphQLNonNull(GraphQLString) },
+        name: { type: GraphQLString },
         country: { type: GraphQLString },
         gender: { type: GraphQLString },
         advertisement: {
@@ -48,7 +49,7 @@ const Mutation = new GraphQLObjectType({
         addAuthor: {
             type: AuthorType,
             args: {
-                name: { type: new GraphQLNonNull(GraphQLString) },
+                name: { type: GraphQLString },
                 country: { type: GraphQLString },
                 gender: { type: GraphQLString }
             },
@@ -69,6 +70,8 @@ const Mutation = new GraphQLObjectType({
                 category: { type: GraphQLString },
                 price: { type: GraphQLString },
                 city: { type: GraphQLString },
+                phone: { type: GraphQLString },
+                email: { type: GraphQLString },
                 negotiable: { type: GraphQLBoolean },
                 authorId: { type: GraphQLString }
             },
@@ -78,7 +81,8 @@ const Mutation = new GraphQLObjectType({
                     description: args.description,
                     category: args.category,
                     price: args.price,
-                    photo: args.photo,
+                    phone: args.phone,
+                    email: args.email,
                     negotiable: args.negotiable,
                     authorId: args.authorId
                 });
@@ -118,7 +122,7 @@ const RootQuery = new GraphQLObjectType({
             }
         },
         authors: {
-            type: AuthorType,
+            type: new GraphQLList(AuthorType),
             resolve(parent, args) {
                 return Author.find({});
             }

@@ -10,19 +10,55 @@ class AddAdvert extends Component {
             description: '',
             price: '',
             negotiable: false,
-            photo: ''
+            city: '',
+            phone: '',
+            email: '',
+            category: '',
+            authorId: ''
+        }
+    }
+
+    displayCategories() {
+        let categories = ['Biographies', 'Business', 'Comics', 'Education', 'Health & Diet', 
+        'History', 'IT & Technology', 'Literature', 'Social', 'Religion', 'Science', 'Travel', 'Other'];
+
+        return categories.map(category => {
+            return(
+                <option key={category} value={category}>{category}</option>
+            )
+        });
+    }
+
+    displayAuthors() {
+        let data = this.props.getAuthorsQuery;
+
+        if (data.loading) {
+            return <option>Loading...</option>;
+        } else {
+            return data.authors.map(author => {
+                return(
+                    <option key={author.id} value={author.id}>{author.name}</option>
+                )
+            });
         }
     }
 
     submitForm(e) {
         e.preventDefault();
+
+        console.log(this.state);
+
         this.props.addAdvertMutation({
             variables: {
                 title: this.state.title,
                 description: this.state.description,
+                category: this.state.category,
+                phone: this.state.phone,
+                email: this.state.email,
                 price: this.state.price,
                 negotiable: this.state.negotiable,
-                photo: this.state.photo
+                city: this.state.city,
+                authorId: this.state.authorId
             },
             refetchQueries: [{ query: getAdvertsQuery }]
         });
@@ -31,7 +67,7 @@ class AddAdvert extends Component {
     render() {
         return(
             <div>
-                <div id="add-advert-container">
+                <div className="add-advert-container">
                     <h1>Add Advert</h1>
                     
                     <form id="add-advert" onSubmit={ this.submitForm.bind(this) }>
@@ -48,12 +84,37 @@ class AddAdvert extends Component {
                             <input type="text" onChange={ (e) => this.setState({ price: e.target.value }) } />
                         </div>
                         <div className="field">
+                            <label>Your Email: </label>
+                            <input type="text" onChange={ (e) => this.setState({ email: e.target.value }) } />
+                        </div>
+                        <div className="field">
+                            <label>Your Phone Number: </label>
+                            <input type="text" onChange={ (e) => this.setState({ phone: e.target.value }) } />
+                        </div>
+                        <div className="field">
+                            <label>City: </label>
+                            <input type="text" onChange={ (e) => this.setState({ city: e.target.value }) } />
+                        </div>
+                        <div className="field">
                             <label>Negotiable: </label>
                             <select onChange={ (e) => this.setState({ negotiable: e.target.value })}>
                                 <option key="false" value="False">False</option>
                                 <option key="true" value="True">True</option>
                             </select>
                         </div>
+                        <div className="field">
+                            <label>Category: </label>
+                            <select onChange={ (e) => this.setState({ category: e.target.value })}>
+                                { this.displayCategories() }
+                            </select>
+                        </div>
+                        <div className="field">
+                            <label>Author: </label>
+                            <select onChange={ (e) => this.setState({ authorId: e.target.value })}>
+                                { this.displayAuthors() }
+                            </select>
+                        </div>
+                        <input type="submit" value="Add!" />
                     </form>
                 </div>
             </div>

@@ -8,7 +8,10 @@ const advertisementSchema = new Schema({
     price: String,
     negotiable: Boolean,
     city: String,
-    authorId: String
+    category: String,
+    authorId: String,
+    phone: String,
+    email: String
 });
 
 module.exports = mongoose.model('Advertisement', advertisementSchema);

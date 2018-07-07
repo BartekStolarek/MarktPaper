@@ -19,7 +19,9 @@ const getAdvertsQuery = gql`
             description
             category
             price
-            photo
+            city
+            phone
+            email
             negotiable
         }
     }
@@ -27,16 +29,23 @@ const getAdvertsQuery = gql`
 
 const addAdvertMutation = gql`
     mutation AddAdvertisement($title: String!, $description: String!, 
-        $price: String!, $category: String!, $city: String!, $negotiable: Boolean!) {
+        $price: String!, $category: String!, $city: String!, $negotiable: Boolean!, $authorId: String!) {
             addAdvertisement(title: $title, description: $description, 
-                price: $price, category: $category, city: $city, negotiable: $negotiable) {
+                price: $price, category: $category, city: $city, negotiable: $negotiable, authorId: $authorId) {
                     title
                     description
                     category
                     price
                     negotiable
                     city
-                    authorId
+                    email
+                    phone
+                    author {
+                        id
+                        name
+                        country
+                        gender
+                    }
                 }
         }
 `;
